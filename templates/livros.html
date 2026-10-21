@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block conteudo %}
+<h1>Livros</h1>
+<form class="busca" method="get"><input name="q" value="{{ request.args.get('q', '') }}" placeholder="Buscar por título ou categoria"><button>Buscar</button></form>
+{% for l in livros %}
+<article class="item">
+  <h2>{{ l.titulo }} {% if l.categoria %}<span class="tag">{{ l.categoria }}</span>{% endif %}</h2><p>{{ l.descricao }}</p>
+  {% if not current_user.is_authenticated %}
+    <p>{{ 'Grátis' if l.preco == 0 else l.preco ~ ' moedas' }}</p>
+    <a class="botao" href="{{ url_for('login') }}">Entre para baixar</a>
+  {% elif l.liberado_para(current_user) %}
+    <a class="botao" href="{{ url_for('baixar_livro', livro_id=l.id) }}">Baixar PDF</a>
+  {% else %}
+    <form method="post" action="{{ url_for('comprar_livro', livro_id=l.id) }}">
+      <button>Comprar por {{ l.preco }} moedas</button></form>
+  {% endif %}
+</article>
+{% else %}<p>Nenhum livro publicado ainda.</p>{% endfor %}
+{% endblock %}

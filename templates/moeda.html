@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block conteudo %}
+<h1>Moeda</h1>
+<p>Seu saldo: <strong>{{ current_user.moedas }} moedas</strong>. Você também ganha moedas ao completar mesas com seus amigos.</p>
+{% for chave, (qtd, preco) in pacotes.items() %}
+<article class="item"><h2>{{ qtd }} moedas</h2><p>{{ preco }}</p>
+  <form method="post" action="{{ url_for('comprar_moeda', pacote=chave) }}"><button>Comprar</button></form></article>
+{% endfor %}
+<p><small>Pagamento simulado: integre Pix/Mercado Pago/Stripe antes de publicar.</small></p>
+{% endblock %}

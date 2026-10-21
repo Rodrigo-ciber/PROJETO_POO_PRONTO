@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block conteudo %}
+<h1>{{ current_user.nome }}</h1>
+<div class="stats">
+  <div><b>{{ current_user.moedas }}</b> moedas</div>
+  <div><b>{{ current_user.mesas|length }}</b> mesas</div>
+  <div><b>{{ current_user.livros|length }}</b> livros comprados</div>
+</div>
+<article class="item linha">
+  <span>Bônus diário: <strong>+{{ current_user.BONUS_DIARIO }} moedas</strong> a cada 24 horas.</span>
+  <form method="post" action="{{ url_for('bonus') }}"><button {{ '' if current_user.bonus_disponivel() else 'disabled' }}>Resgatar bônus</button></form>
+</article>
+<h2>Minhas mesas</h2>
+{% for m in current_user.mesas %}<p>{{ m.titulo }} {% if m.concluida %}<span class="tag">concluída</span>{% endif %}</p>
+{% else %}<p>Você ainda não está em nenhuma mesa. <a href="{{ url_for('mesas') }}">Ver mesas</a></p>{% endfor %}
+<h2>Minha estante</h2>
+{% for l in current_user.livros %}<p>{{ l.titulo }} · <a href="{{ url_for('baixar_livro', livro_id=l.id) }}">baixar</a></p>
+{% else %}<p>Nenhum livro comprado ainda.</p>{% endfor %}
+<h2>Extrato de moedas</h2>
+{% for t in transacoes %}<p>{{ t.criado_em.strftime('%d/%m/%Y %H:%M') }} · {{ t.motivo }} ·
+  <strong>{{ '+' if t.valor > 0 }}{{ t.valor }}</strong></p>
+{% else %}<p>Sem movimentações.</p>{% endfor %}
+{% endblock %}

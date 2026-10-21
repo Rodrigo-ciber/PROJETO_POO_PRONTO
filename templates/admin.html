@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block conteudo %}
+<h1>Painel admin</h1>
+<div class="stats"><div><b>{{ usuarios|length }}</b> contas</div><div><b>{{ mesas|length }}</b> mesas</div>
+<div><b>{{ livros|length }}</b> livros</div><div><b>{{ total_moedas }}</b> moedas em circulação</div></div>
+
+<h2>Contas ({{ usuarios|length }})</h2>
+{% for u in usuarios %}
+<article class="item linha">
+  <span><strong>{{ u.nome }}</strong> · {{ u.email }} · {{ u.moedas }} moedas
+    {% if u.admin %}· admin{% endif %}{% if u.banido %}· <em>banido</em>{% endif %}</span>
+  {% if not u.admin %}
+  <span>
+    <form method="post" action="{{ url_for('dar_moedas', uid=u.id) }}"><input type="number" name="valor" min="1" placeholder="+moedas" required class="mini"><button>Dar</button></form>
+    <form method="post" action="{{ url_for('banir_usuario', uid=u.id) }}"><button>{{ 'Desbanir' if u.banido else 'Banir' }}</button></form>
+    <form method="post" action="{{ url_for('apagar_usuario', uid=u.id) }}" onsubmit="return confirm('Apagar {{ u.nome }} e as mesas dela?')"><button class="perigo">Apagar</button></form>
+  </span>
+  {% endif %}
+</article>
+{% endfor %}
+
+<h2>Mesas</h2>
+<details class="form"><summary>Adicionar mesa</summary>
+<form method="post" action="{{ url_for('nova_mesa') }}">
+  <label>Título <input name="titulo" required></label>
+  <label>Sistema <input name="sistema" placeholder="D&D 5e, Tormenta20, Ordem Paranormal..."></label>
+  <label>Descrição <textarea name="descricao"></textarea></label>
+  <label>Preço para entrar (moedas) <input type="number" name="preco" min="0" value="0"></label>
+  <label>Recompensa por jogador <input type="number" name="recompensa" min="0" value="50"></label>
+  <label>Máximo de jogadores <input type="number" name="max_jogadores" min="1" value="5"></label>
+  <button>Adicionar mesa</button>
+</form></details>
+{% for m in mesas %}
+<article class="item linha"><span>{{ m.titulo }} · mestre {{ m.mestre.nome }} · {{ m.jogadores|length }}/{{ m.max_jogadores }}</span>
+  <form method="post" action="{{ url_for('remover_mesa', mesa_id=m.id) }}" onsubmit="return confirm('Remover esta mesa?')"><button class="perigo">Remover</button></form></article>
+{% else %}<p>Nenhuma mesa.</p>{% endfor %}
+
+<h2>Livros</h2>
+<details class="form"><summary>Adicionar livro</summary>
+<form method="post" action="{{ url_for('novo_livro') }}" enctype="multipart/form-data">
+  <label>Título <input name="titulo" required></label>
+  <label>Descrição <textarea name="descricao"></textarea></label>
+  <label>Categoria <input name="categoria" placeholder="Aventura, Personagens, Cenário..."></label>
+  <label>Preço (moedas, 0 = grátis) <input type="number" name="preco" min="0" value="0"></label>
+  <label>Arquivo PDF <input type="file" name="pdf" accept="application/pdf" required></label>
+  <button>Adicionar livro</button>
+</form></details>
+{% for l in livros %}
+<article class="item linha"><span>{{ l.titulo }} · {{ 'grátis' if l.preco == 0 else l.preco ~ ' moedas' }}</span>
+  <form method="post" action="{{ url_for('remover_livro', livro_id=l.id) }}" onsubmit="return confirm('Remover este livro?')"><button class="perigo">Remover</button></form></article>
+{% else %}<p>Nenhum livro.</p>{% endfor %}
+{% endblock %}

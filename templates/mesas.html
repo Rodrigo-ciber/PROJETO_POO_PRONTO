@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block conteudo %}
+<h1>Mesas</h1>
+<form class="busca" method="get"><input name="q" value="{{ request.args.get('q', '') }}" placeholder="Buscar por título ou sistema (D&D, Tormenta20...)"><button>Buscar</button></form>
+{% if current_user.is_authenticated %}<details class="form"><summary>Criar mesa</summary>
+<form method="post" action="{{ url_for('nova_mesa') }}">
+  <label>Título <input name="titulo" required></label>
+  <label>Sistema <input name="sistema" placeholder="D&D 5e, Tormenta20, Ordem Paranormal..."></label>
+  <label>Descrição <textarea name="descricao"></textarea></label>
+  <label>Preço para entrar (moedas) <input type="number" name="preco" min="0" value="0"></label>
+  <label>Recompensa por jogador (moedas) <input type="number" name="recompensa" min="0" value="50"></label>
+  <label>Máximo de jogadores <input type="number" name="max_jogadores" min="1" value="5"></label>
+  <button>Criar mesa</button>
+</form></details>{% endif %}
+{% for m in mesas %}
+<article class="item">
+  <h2>{{ m.titulo }} {% if m.sistema %}<span class="tag">{{ m.sistema }}</span>{% endif %}</h2>
+  <p>{{ m.descricao }}</p>
+  <p>Mestre: {{ m.mestre.nome }} · {{ m.jogadores|length }}/{{ m.max_jogadores }} jogadores ·
+     {{ 'Grátis' if m.preco == 0 else m.preco ~ ' moedas' }} · Recompensa: {{ m.recompensa }}</p>
+  {% if m.concluida %}<em>Concluída</em>
+  {% elif not current_user.is_authenticated %}<a class="botao" href="{{ url_for('login') }}">Entre para participar</a>
+  {% elif current_user in m.jogadores %}
+    {% if m.mestre_id == current_user.id or current_user.admin %}
+    <form method="post" action="{{ url_for('concluir_mesa', mesa_id=m.id) }}"><button>Concluir mesa</button></form>
+    {% else %}<em>Você está nesta mesa</em>{% endif %}
+  {% else %}
+    <form method="post" action="{{ url_for('entrar_mesa', mesa_id=m.id) }}">
+      <button>{{ 'Entrar' if m.preco == 0 else 'Comprar vaga por ' ~ m.preco }}</button></form>
+  {% endif %}
+</article>
+{% else %}<p>Nenhuma mesa ainda. Crie a primeira.</p>{% endfor %}
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block conteudo %}
+<h1>Criar conta</h1>
+<form method="post" class="form">
+  <label>Nome de aventureiro <input name="nome" required maxlength="60"></label>
+  <label>E-mail <input type="email" name="email" required></label>
+  <label>Senha (mín. 6 caracteres) <input type="password" name="senha" required minlength="6"></label>
+  <button>Criar conta</button>
+  <p>Já tem conta? <a href="{{ url_for('login') }}">Entrar</a></p>
+</form>
+{% endblock %}

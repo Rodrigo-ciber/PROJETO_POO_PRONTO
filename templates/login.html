@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block conteudo %}
+<h1>Entrar na taverna</h1>
+<form method="post" class="form">
+  <label>Usuário ou e-mail <input name="login" required></label>
+  <label>Senha <input type="password" name="senha" required></label>
+  <button>Entrar</button>
+  <p>Sem conta? <a href="{{ url_for('registro') }}">Criar conta</a></p>
+</form>
+{% endblock %}

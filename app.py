@@ -106,7 +106,7 @@ def create_app():
         logout_user()
         return redirect(url_for("mesas"))
 
-    # ---------- Mesas (listagem pública) ----------
+    # ---------- Mesas ----------
     @app.route("/mesas")
     def mesas():
         q = request.args.get("q", "").strip()
@@ -197,7 +197,7 @@ def create_app():
     def comprar_moeda(pacote):
         if pacote not in PACOTES_MOEDAS:
             abort(404)
-        # SIMULAÇÃO: troque por Pix/Mercado Pago/Stripe antes de ir a produção.
+        # -- Pagamentos (Simulado)
         current_user.creditar(PACOTES_MOEDAS[pacote][0], f"Pacote de moedas ({pacote})")
         db.session.commit()
         flash("Moedas adicionadas (compra simulada).")

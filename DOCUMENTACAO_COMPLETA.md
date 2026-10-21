@@ -13,7 +13,7 @@ Documento de estudo do projeto **Guilda Arcana**, um site de RPG feito em **Pyth
 7. [Templates HTML explicados](#7-templates-html-explicados)
 8. [CSS explicado](#8-css-explicado)
 9. [Fluxos completos passo a passo](#9-fluxos-completos-passo-a-passo)
-10. [Perguntas e respostas para a apresentação](#10-perguntas-e-respostas-para-a-apresentação)
+10. [Perguntas e respostas](#10-perguntas-e-respostas-para-a-apresentação)
 11. [Glossário](#11-glossário)
 12. [Limitações conhecidas](#13-limitações-conhecidas)
 

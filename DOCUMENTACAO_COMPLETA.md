@@ -2,6 +2,7 @@
 
 Documento de estudo do projeto **Guilda Arcana**, um site de RPG feito em **Python + Flask**, com **programação orientada a objetos (POO)** e banco de dados **SQLite**.
 
+**Link do projeto:** https://rodrigocyber.pythonanywhere.com/mesas
 ## Sumário
 
 1. [Resumo do projeto](#1-resumo-do-projeto)

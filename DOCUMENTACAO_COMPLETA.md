@@ -1,11 +1,11 @@
 # Guilda Arcana: documentação completa para estudo
 
-Documento de estudo do projeto **Guilda Arcana**, um site de RPG feito em **Python + Flask**, com **programação orientada a objetos (POO)** e banco de dados **SQLite**. Foi escrito para que todos do grupo consigam entender e explicar cada parte do código na apresentação.
+Documento de estudo do projeto **Guilda Arcana**, um site de RPG feito em **Python + Flask**, com **programação orientada a objetos (POO)** e banco de dados **SQLite**.
 
 ## Sumário
 
 1. [Resumo do projeto](#1-resumo-do-projeto)
-2. [Classes e POO: quantas classes existem?](#2-classes-e-poo-quantas-classes-existem)
+2. [Classes e POO](#2-classes-e-poo-quantas-classes-existem)
 3. [Arquitetura: como tudo se conecta](#3-arquitetura-como-tudo-se-conecta)
 4. [Banco de dados](#4-banco-de-dados)
 5. [models.py explicado](#5-modelspy-explicado)
@@ -15,8 +15,7 @@ Documento de estudo do projeto **Guilda Arcana**, um site de RPG feito em **Pyth
 9. [Fluxos completos passo a passo](#9-fluxos-completos-passo-a-passo)
 10. [Perguntas e respostas para a apresentação](#10-perguntas-e-respostas-para-a-apresentação)
 11. [Glossário](#11-glossário)
-12. [Sugestão de divisão da apresentação](#12-sugestão-de-divisão-da-apresentação)
-13. [Limitações conhecidas](#13-limitações-conhecidas)
+12. [Limitações conhecidas](#13-limitações-conhecidas)
 
 ---
 
@@ -55,14 +54,14 @@ rpg_site/
 ├── requirements.txt    # bibliotecas
 ├── templates/          # base, login, registro, mesas, livros, moeda, perfil, admin
 ├── static/style.css    # visual
-└── instance/           # criada sozinha: rpg.db (banco) e livros/ (PDFs enviados)
+└── instance/           # criada sozinha: rpg.db (banco) e livro
 ```
 
 ---
 
-## 2. Classes e POO: quantas classes existem?
+## 2. Classes e POO
 
-**Resposta curta: o projeto tem exatamente 4 classes criadas por nós, não mais que 4.**
+**O projeto tem exatamente 4 classes criadas.**
 
 | # | Classe | Arquivo | Representa | Herda de |
 |---|---|---|---|---|
@@ -71,19 +70,17 @@ rpg_site/
 | 3 | `Mesa` | models.py | Uma sessão de RPG | `db.Model` |
 | 4 | `Livro` | models.py | Um PDF à venda ou grátis | `db.Model` |
 
-**O que parece uma classe, mas não é uma classe nossa:**
-- `participantes` e `livros_comprados` são `db.Table`: tabelas de ligação criadas com um objeto da biblioteca, não classes que escrevemos.
+**O que parece ser uma classe, mais não é**
+- `participantes` e `livros_comprados` são `db.Table`: tabelas de ligação criadas com um objeto da biblioteca.
 - `db` (`SQLAlchemy()`), `app` (`Flask(...)`) e `login` (`LoginManager`) são **objetos** de classes das bibliotecas.
-- `admin_required` é uma **função** (decorator), não uma classe.
-
-> Se o trabalho exigir **mais de 4 classes**, é possível acrescentar sem mudar o que já existe. Boas candidatas: `Avaliacao` (nota e comentário de uma mesa ou livro), `Categoria`, `PacoteMoeda` (hoje é um dicionário) ou uma classe de serviço como `Carteira`.
+- `admin_required` é uma **função**, não uma classe.
 
 ### Conceitos de POO presentes no código
 
 | Conceito | Onde aparece | Explicação |
 |---|---|---|
 | **Classe e objeto** | `class Mesa(...)`, `Mesa(titulo="...")` | A classe é o molde, e cada mesa criada é um objeto. |
-| **Atributos** | `titulo`, `preco`, `moedas`... | Os dados que cada objeto guarda (viram colunas). |
+| **Atributos** | `titulo`, `preco`, `moedas`... | Os dados que cada objeto guarda. |
 | **Métodos** | `entrar()`, `concluir()`, `debitar()`... | O comportamento do objeto. |
 | **Encapsulamento** | `debitar()` e `creditar()` | O saldo só é alterado por métodos que validam e registram no extrato. As rotas não mexem no saldo diretamente. |
 | **Herança** | `Usuario(UserMixin, db.Model)` | `Usuario` herda os métodos de login do `UserMixin` e o comportamento de tabela do `db.Model`. Todas as 4 classes herdam de `db.Model`. |
@@ -91,8 +88,6 @@ rpg_site/
 | **Abstração** | `Mesa.entrar(usuario)` | Quem chama não precisa saber as validações internas. |
 | **Tratamento de exceções** | `raise ValueError` + `except ValueError` | As classes lançam o erro, e as rotas o capturam e mostram a mensagem. |
 | **Constante de classe** | `Usuario.BONUS_DIARIO = 20` | Valor compartilhado por todos os objetos da classe. |
-
-**Observação honesta:** o projeto **não** implementa polimorfismo próprio (sobrescrever métodos em subclasses nossas). Se perguntarem, a resposta correta é que o foco foi em classes, herança das bibliotecas, encapsulamento e relacionamentos.
 
 ---
 
@@ -119,7 +114,7 @@ Navegador ──POST /mesas/3/entrar──▶ Flask (rota entrar_mesa em app.py)
                                          ▼
                                   SQLite (instance/rpg.db)
                                          │
-Navegador ◀──redirect /mesas── Flask ◀───┘  (mostra a mensagem com flash)
+Navegador ◀──redirect /mesas── Flask ◀───┘  mostra a mensagem com flash
 ```
 
 ---
@@ -136,7 +131,7 @@ Navegador ◀──redirect /mesas── Flask ◀───┘  (mostra a mensag
 - **ORM (SQLAlchemy):** em vez de escrever SQL, usamos classes Python. Cada classe vira uma tabela, e cada objeto vira uma linha.
 - **`db.create_all()`:** cria as tabelas que ainda não existem. Ele **não altera** tabelas já criadas. Por isso, quando uma coluna muda, é preciso apagar o `rpg.db`.
 
-O arquivo `rpg.db` é **binário**, então não abre no Bloco de Notas. Use o **DB Browser for SQLite** (sqlitebrowser.org) ou a extensão *SQLite Viewer* do VS Code.
+O arquivo `rpg.db` é **binário**, então não abre no Bloco de Notas. Se Desejar abrir tem que usar o **DB Browser for SQLite** (sqlitebrowser.org) ou a extensão *SQLite Viewer* do VS Code.
 
 ### 4.2 Diagrama das tabelas
 

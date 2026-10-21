@@ -565,7 +565,7 @@ def create_app():
         logout_user()
         return redirect(url_for("mesas"))
 
-    # ---------- Mesas (listagem pública) ----------
+    # ---------- Mesas ----------
     @app.route("/mesas")
     def mesas():
         q = request.args.get("q", "").strip()
@@ -616,7 +616,7 @@ def create_app():
             flash(str(e))
         return redirect(url_for("mesas"))
 
-    # ---------- Livros (listagem pública, download só logado) ----------
+    # ---------- Livros ----------
     @app.route("/livros")
     def livros():
         q = request.args.get("q", "").strip()

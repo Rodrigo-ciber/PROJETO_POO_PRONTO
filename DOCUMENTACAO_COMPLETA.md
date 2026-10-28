@@ -1,4 +1,4 @@
-# Guilda Arcana: documentação completa para estudo
+# Guilda Arcana: documentação completa
 
 Documento de estudo do projeto **Guilda Arcana**, um site de RPG feito em **Python + Flask**, com **programação orientada a objetos (POO)** e banco de dados **SQLite**.
 
